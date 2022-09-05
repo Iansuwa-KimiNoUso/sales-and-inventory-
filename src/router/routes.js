@@ -10,12 +10,12 @@ const routes = [
   },
   {
     path: "/inventory-management",
-    component: () => MainLayout,
+    component: MainLayout,
     children: [{ path: "", component: InventoryManagement }],
   },
   {
     path: "/user-management",
-    component: () => MainLayout,
+    component: MainLayout,
     children: [{ path: "", component: UserManagement }],
   },
 

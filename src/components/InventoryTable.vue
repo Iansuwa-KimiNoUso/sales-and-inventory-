@@ -1,5 +1,48 @@
 <template>
-  <div class>
+  <div class="q-py-lg text-bold row justify-between full-width items-center">
+    <div>INVENTORY MANAGEMENT</div>
+    <div class="">
+      <q-btn round icon="local_grocery_store">
+        <q-badge v-if="cartItemsCount" color="orange" floating rounded>
+          {{ cartItemsCount }}
+        </q-badge>
+        <q-popup-proxy v-model="showCart">
+          <q-list>
+            <q-item v-for="(value, index) in cartItems" :key="index">
+              <q-item-section avatar>
+                <q-avatar size="60px">
+                  <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-capitalize">
+                  {{ value.name }}
+                </q-item-label>
+                <q-item-label caption> {{ value.description }} </q-item-label>
+              </q-item-section>
+              <q-item-section side> {{ value.price }} </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label>
+                  {{ totalText }}
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn
+                  label="checkout"
+                  size="sm"
+                  color="primary"
+                  @click="showCart = !showCart"
+                />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-popup-proxy>
+      </q-btn>
+    </div>
+  </div>
+  <div>
     <q-list bordered separator class="rounded-borders">
       <q-item dense class="bg-blue-6">
         <div class="row full-width">
@@ -12,7 +55,7 @@
           </div>
         </div>
       </q-item>
-      <div v-if="!isFetchingItems">
+      <q-list v-if="!isFetchingItems" separator bordered>
         <q-item v-for="(item, index) in items" :key="index">
           <div class="row full-width items-center">
             <div
@@ -30,13 +73,21 @@
                 <q-img
                   fill
                   :src="value"
-                  style="height: 140px; max-width: 200px"
+                  style="height: 60px; max-width: 120px"
                 />
               </div>
             </div>
+            <q-btn
+              class="col-1"
+              icon-right="local_grocery_store"
+              label="Add to cart"
+              color="primary"
+              size="sm"
+              @click="addToCart(item)"
+            />
           </div>
         </q-item>
-      </div>
+      </q-list>
       <q-item v-else class="justify-center">
         <q-circular-progress
           indeterminate
@@ -87,9 +138,14 @@ export default defineComponent({
           value: "price",
           class: "col-1",
         },
+        {
+          value: "actions",
+          class: "col-1 text-center",
+        },
       ],
       items: [],
-
+      cartItems: [],
+      showCart: false,
       isFetchingItems: false,
     };
   },
@@ -113,12 +169,27 @@ export default defineComponent({
       this.isFetchingItems = false;
     },
 
+    addToCart(value) {
+      this.cartItems.push(value);
+    },
+
     isText: (key) => {
       return key !== "picture";
     },
   },
 
-  computed: {},
+  computed: {
+    cartItemsCount: function () {
+      return this.cartItems.length;
+    },
+    totalText: function () {
+      let total = 0;
+      this.cartItems.forEach((item) => {
+        total += item.price;
+      });
+      return `Total: ${total}`;
+    },
+  },
 });
 </script>
 <style lang=""></style>

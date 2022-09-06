@@ -25,6 +25,7 @@ instance.interceptors.request.use((config) => {
   return new Promise((resolve) => setTimeout(() => resolve(config), 2000));
 });
 
+// mocking for api responses
 instance.interceptors.response.use(
   (response) => {
     return response;
